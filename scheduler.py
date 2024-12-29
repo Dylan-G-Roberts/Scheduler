@@ -11,13 +11,14 @@ def t3():
 
 class Task():
     def __init__(self, name, func, arrival_time=0, burst_time=1, priority=0):
-        self.name           = name
-        self.func           = func
-        self.arrival_time   = arrival_time
-        self.remaining_time = burst_time
-        self.priority       = priority
-        self.completed      = False
-        self.burst_time     = burst_time
+        self.name               = name
+        self.func               = func
+        self.arrival_time       = arrival_time
+        self.burst_time         = burst_time
+        self.remaining_time     = burst_time
+        self.priority           = priority
+        self.completed          = False
+        self.completion_time    = None
 
     def execute(self):
         if self.remaining_time > 0:
@@ -73,7 +74,7 @@ def print_stats(tasks):
 
 def main():
     tasks = [
-        Task("t1", t1, arrival_time=0, burst_time=10),
+        Task("t1", t1, arrival_time=0, burst_time=100),
         Task("t2", t2, arrival_time=0, burst_time=10),
         Task("t3", t3, arrival_time=0, burst_time=10),
     ]
