@@ -1,8 +1,5 @@
 
 
-from typing import List
-
-
 def t1():
     pass
 
@@ -59,9 +56,8 @@ class Scheduler:
         time = 0
         while any(not task.completed for task in tasks):
             task_executed = False
-            
             for task in self.scheduling_algorithm(tasks):
-                if not task.completed and time >= task.arrival_time: # Only run uncompleted tasks that have arrived
+                if self.can_execute(task, time):
                     print(f"Time:{time} - Executing {task.name}")
                     task.execute()
                     task_executed = True
@@ -78,6 +74,9 @@ class Scheduler:
             
             # Time ticks forward
             time += 1
+
+    def can_execute(self, task: Task, time):
+        return not task.completed and time >= task.arrival_time
 
 def stcf_scheduler(tasks):
     return sorted(tasks, key=lambda task: task.remaining_time)
