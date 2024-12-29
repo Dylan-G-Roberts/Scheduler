@@ -1,5 +1,8 @@
 
 
+from typing import List
+
+
 def t1():
     pass
 
@@ -64,21 +67,47 @@ def fcfs_scheduler(tasks):
         # Time ticks forward
         time += 1
 
+def stcf_scheduler(tasks: List[Task]):
+    time = 0
+    while any(not task.completed for task in tasks):
+        task_executed = False
+        
+        for task in sorted(tasks, key=lambda task: task.remaining_time):
+            if not task.completed and time >= task.arrival_time: # Only run uncompleted tasks that have arrived
+                print(f"Time:{time} - Executing {task.name}")
+                task.execute()
+                task_executed = True
+                if task.completed:
+                    print(f"Time:{time+1} - Task {task.name} Complete")
+                    task.completion_time = time + 1
+                # Only run 1 task per CPU Tick
+                break
+    
+        if not task_executed:
+            # Check if a task is arriving in the next tick
+            if any(task.arrival_time > time for task in tasks):
+                print(f"Time:{time} - CPU Idle")
+        
+        # Time ticks forward
+        time += 1
+
+
 def print_stats(tasks):         
     for task in tasks:
         print(f"Task {task.name} turnaround time is {task.turnaround_time()}")
         print(f"Task {task.name} wait time is {task.waiting_time()}")
     
-    print(f"Average turnaround time is {sum([task.turnaround_time() for task in tasks])/len(tasks)}")
+    print(f"Average turnaround time is {round(sum([task.turnaround_time() for task in tasks])/len(tasks), 3)}")
+
 
 
 def main():
     tasks = [
         Task("t1", t1, arrival_time=0, burst_time=100),
-        Task("t2", t2, arrival_time=0, burst_time=10),
-        Task("t3", t3, arrival_time=0, burst_time=10),
+        Task("t2", t2, arrival_time=10, burst_time=10),
+        Task("t3", t3, arrival_time=10, burst_time=10),
     ]
-    fcfs_scheduler(tasks)
+    stcf_scheduler(tasks)
 
     print_stats(tasks)
 
